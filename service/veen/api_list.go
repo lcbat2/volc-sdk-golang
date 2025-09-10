@@ -233,5 +233,79 @@ var (
 				"Version": []string{ServiceVersion},
 			},
 		},
+
+		// 扩展 api 接口
+		"BatchCreateEIPInstances": { // 批量创建弹性公网IP
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"BatchCreateEIPInstances"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"DeleteEIPInstance": { // 释放弹性公网IP
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"DeleteEIPInstance"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetEIPInstanceName": { // 修改弹性公网IP名称
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetEIPInstanceName"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetEIPInstanceDesc": { // 修改弹性公网IP描述
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetEIPInstanceDesc"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetEIPInstanceBandwidthPeak": { // 修改弹性公网IP带宽
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetEIPInstanceBandwidthPeak"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"BindEIPToVeen": { // 绑定边缘实例
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"BindEIPToVeen"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"UnbindEIPFromVeen": { // 解除已绑定的边缘实例
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"UnbindEIPFromVeen"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"ListEIPInstances": { // 获取弹性公网IP列表
+			Method: http.MethodGet,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"ListEIPInstances"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"GetEIPInstance": { // 获取弹性公网IP详情
+			Method: http.MethodGet,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"GetEIPInstance"},
+				"Version": []string{ServiceVersion},
+			},
+		},
 	}
 )

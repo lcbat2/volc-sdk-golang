@@ -307,5 +307,77 @@ var (
 				"Version": []string{ServiceVersion},
 			},
 		},
+		"ListVPCInstances": { // 获取私有网络列表
+			Method: http.MethodGet,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"ListVPCInstances"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetVPCInstanceName": { // 修改私有网络名称
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetVPCInstanceName"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetVPCInstanceDesc": { // 修改私有网络描述
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetVPCInstanceDesc"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"CreateCustomVPCInstance": { // 创建自定义私有网络
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"CreateCustomVPCInstance"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"DeleteCustomVPCInstances": { // 删除自定义私有网络
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"DeleteCustomVPCInstances"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"ListSubnetInstances": { // 获取子网列表
+			Method: http.MethodGet,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"ListSubnetInstances"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"CreateSubnetsForCustomVPC": { // 创建子网
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"CreateSubnetsForCustomVPC"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"SetSubnetNameAndDesc": { // 修改子网名称和描述
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetSubnetNameAndDesc"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"DeleteSubnetsForCustomVPC": { // 删除子网
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"DeleteSubnetsForCustomVPC"},
+				"Version": []string{ServiceVersion},
+			},
+		},
 	}
 )

@@ -121,3 +121,143 @@ func (v *Veen) GetEIPInstance(req *GetEIPInstanceReq) (*GetEIPInstanceResp, erro
 	}
 	return resp, nil
 }
+
+func (v *Veen) ListVPCInstances(req *ListVPCInstancesReq) (*ListVPCInstancesResp, error) {
+	resp := &ListVPCInstancesResp{}
+	query := url.Values{}
+	query.Set("page", strconv.Itoa(int(req.Page)))
+	query.Set("limit", strconv.Itoa(int(req.Limit)))
+	query.Set("order_by", strconv.Itoa(int(req.OrderBy)))
+	if req.VpcIdentityList != "" {
+		query.Set("vpc_identity_list", req.VpcIdentityList)
+	}
+	if req.ClusterNames != "" {
+		query.Set("cluster_names", req.ClusterNames)
+	}
+	if req.IsVlanVpc {
+		query.Set("is_vlan_vpc", "true")
+	} else {
+		query.Set("is_vlan_vpc", "false")
+	}
+	if req.IsDefaultVpc {
+		query.Set("is_default_vpc", "true")
+	} else {
+		query.Set("is_default_vpc", "false")
+	}
+	if req.IsCustomVpc {
+		query.Set("is_custom_vpc", "true")
+	} else {
+		query.Set("is_custom_vpc", "false")
+	}
+	if req.WithResourceStatistic {
+		query.Set("with_resource_statistic", "true")
+	} else {
+		query.Set("with_resource_statistic", "false")
+	}
+	if err := v.get("ListVPCInstances", query, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) CreateCustomVPCInstance(req *CreateCustomVPCInstanceReq) (*CreateCustomVPCInstanceResp, error) {
+	resp := &CreateCustomVPCInstanceResp{}
+	if err := v.post("CreateCustomVPCInstance", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) SetVPCInstanceName(req *SetVPCInstanceNameReq) (*SetVPCInstanceNameResp, error) {
+	resp := &SetVPCInstanceNameResp{}
+	if err := v.post("SetVPCInstanceName", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+func (v *Veen) SetVPCInstanceDesc(req *SetVPCInstanceDescReq) (*SetVPCInstanceDescResp, error) {
+	resp := &SetVPCInstanceDescResp{}
+	if err := v.post("SetVPCInstanceDesc", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) DeleteCustomVPCInstances(req *DeleteCustomVPCInstancesReq) (*DeleteCustomVPCInstancesResp, error) {
+	resp := &DeleteCustomVPCInstancesResp{}
+	if err := v.post("DeleteCustomVPCInstances", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) ListSubnetInstances(req *ListSubnetInstancesReq) (*ListSubnetInstancesResp, error) {
+	resp := &ListSubnetInstancesResp{}
+	query := url.Values{}
+	query.Set("page", strconv.Itoa(int(req.Page)))
+	query.Set("limit", strconv.Itoa(int(req.Limit)))
+	query.Set("order_by", strconv.Itoa(int(req.OrderBy)))
+	if req.SubnetIdentityList != "" {
+		query.Set("subnet_identity_list", req.SubnetIdentityList)
+	}
+	if req.ClusterNames != "" {
+		query.Set("cluster_names", req.ClusterNames)
+	}
+	if req.StatusList != "" {
+		query.Set("status_list", req.StatusList)
+	}
+	if err := v.get("ListSubnetInstances", query, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) CreateSubnetsForCustomVPC(req *CreateSubnetsForCustomVPCReq) (*CreateSubnetsForCustomVPCResp, error) {
+	resp := &CreateSubnetsForCustomVPCResp{}
+	if err := v.post("CreateSubnetsForCustomVPC", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+func (v *Veen) SetSubnetNameAndDesc(req *SetSubnetNameAndDescReq) (*SetSubnetNameAndDescResp, error) {
+	resp := &SetSubnetNameAndDescResp{}
+	if err := v.post("SetSubnetNameAndDesc", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
+
+func (v *Veen) DeleteSubnetsForCustomVPC(req *DeleteSubnetsForCustomVPCReq) (*DeleteSubnetsForCustomVPCResp, error) {
+	resp := &DeleteSubnetsForCustomVPCResp{}
+	if err := v.post("DeleteSubnetsForCustomVPC", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}

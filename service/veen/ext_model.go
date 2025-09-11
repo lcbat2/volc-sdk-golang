@@ -289,3 +289,265 @@ type GetEIPInstanceResp struct {
 type GetEIPInstancesResult struct {
 	Eip EIPInstance `json:"eip"`
 }
+
+// 获取私有网络列表 ===========================
+type ListVPCInstancesReq struct {
+	// 私有网络的 ID 的列表。多个私有网络之间用半角逗号（,）分隔
+	VpcIdentityList string `json:"vpc_identity_list" query:"vpc_identity_list"`
+	// 节点名称。节点之间用半角逗号（,）分隔。
+	ClusterNames string `json:"cluster_names" query:"cluster_names"`
+	// 是否是 VLAN 私有网络：
+	// true：VLAN 私有网络。
+	// false：非 VLAN 私有网络
+	IsVlanVpc bool `json:"is_vlan_vpc" query:"is_vlan_vpc"`
+	// 是否是默认私有网络：
+	// true：默认私有网络。
+	// false：该参数值无效。指定该参数值的效果等同于未指定is_default_vpc的值。
+	IsDefaultVpc bool `json:"is_default_vpc" query:"is_default_vpc"`
+	// 是否是自定义私有网络：
+	// true：自定义私有网络。
+	// false：非自定义私有网络。
+	IsCustomVpc bool `json:"is_custom_vpc" query:"is_custom_vpc"`
+	// 是否返回私有网络下的资源的统计数据。取值范围：
+	// true：返回资源的统计数据。
+	// false（默认值）：不返回资源的统计数据。
+	WithResourceStatistic bool `json:"with_resource_statistic" query:"with_resource_statistic"`
+	Pagination
+}
+type ListVPCInstancesResp struct {
+	ResponseMetadata VolcResponseMetadata   `json:"ResponseMetadata"`
+	Result           ListVPCInstancesResult `json:"Result"`
+}
+
+type ListVPCInstancesResult struct {
+	VpcInstances []*VPCInstance `json:"vpc_instances"` // 私有网络的列表
+	TotalCount   int64          `json:"count"`         // 私有网络的数量
+}
+
+type VPCInstance struct {
+	AccountIdentity    int               `json:"account_identity"`      //
+	UserIdentity       int               `json:"user_identity"`         //
+	VpcIdentity        string            `json:"vpc_identity"`          // 私有网络的 ID
+	VpcName            string            `json:"vpc_name"`              // 私有网络的名称
+	VpcNs              string            `json:"vpc_ns"`                //
+	ClusterVpcID       int               `json:"cluster_vpc_id"`        //
+	Cluster            Cluster           `json:"cluster"`               // 私有网络所属的节点
+	Status             string            `json:"status"`                // 私有网络的状态：available：可用。modifying：变更中
+	IsDefault          bool              `json:"is_default"`            // 是否是默认私有网络：true：默认私有网络。false：非默认私有网络。
+	Desc               string            `json:"desc"`                  // 私有网络的描述。
+	SubNets            []SubNet          `json:"sub_nets"`              // 子网列表
+	ResourceStatistic  ResourceStatistic `json:"resource_statistic"`    // 资源统计列表
+	LocalAccountVgwNum int               `json:"local_account_vgw_num"` // 本账号边缘云网关的数量
+	CrossAccountVgwNum int               `json:"cross_account_vgw_num"` // 跨账号边缘云网关的数量
+	IsCustom           bool              `json:"is_custom"`             // 是否是自定义私有网络：true：自定义私有网络。false：非自定义私有网络
+	IsVlan             bool              `json:"is_vlan"`               // 是否是 VLAN 私有网络：true：VLAN 私有网络。false：非 VLAN 私有网络
+	Segment            string            `json:"segment"`               // 私有网络的网段
+	CreateTime         int               `json:"create_time"`           // 私有网络的创建时间
+	UpdateTime         int               `json:"update_time"`           // 私有网络的更新时间
+}
+
+type SubNet struct {
+	AccountIdentity int    `json:"account_identity"` //
+	UserIdentity    int    `json:"user_identity"`    //
+	SubnetIdentity  string `json:"subnet_identity"`  // 子网的 ID
+	CidrIP          string `json:"cidr_ip"`          // IP 地址。
+	CidrMask        int    `json:"cidr_mask"`        // 前缀长度
+	Name            string `json:"name"`             // 子网的名称
+	Desc            string `json:"desc"`             // 子网的描述
+	Status          string `json:"status"`           // 子网的状态：available：可用。modifying：变更中。deleting：删除中
+	CreateTime      int    `json:"create_time"`      //
+	UpdateTime      int    `json:"update_time"`      //
+}
+
+type ResourceStatistic struct {
+	VeenInstanceCount           int `json:"veen_instance_count"`             // 边缘实例的数量
+	VeewSgInstanceCount         int `json:"veew_sg_instance_count"`          // 外网防火墙的数量
+	VeewLbInstanceCount         int `json:"veew_lb_instance_count"`          // 负载均衡实例的数量
+	VeewRouteTableInstanceCount int `json:"veew_route_table_instance_count"` // 路由表的数量
+	VeewNatgwInstanceCount      int `json:"veew_natgw_instance_count"`       // NAT 网关的数量
+}
+
+// 创建自定义私有网络===================================
+type CreateCustomVPCInstanceReq struct {
+	// 私有网络的名称。命名规则如下：
+	// 允许 5~50 个字符。
+	// 支持汉字、大写字母、小写字母、数字。
+	// 支持特殊字符 ()`~!@#$%^&*-+=_|{}[]:;'<>,.?/。 |
+	// 不能包含双引号（"）、反斜线（\）和空格，且不能以正斜线（/）开头
+	VpcName string `json:"vpc_name" query:"vpc_name" validate:"required"`
+	// 私有网络所属的节点。
+	ClusterName string `json:"cluster_name" query:"cluster_name" validate:"required"`
+	// 私有网络的网段。
+	// 推荐您使用RFC标准定义的私有网段10.0.0.0/8、172.16.0.0/12、192.168.0.0/16及其子网。
+	Segment string `json:"segment" query:"segment" validate:"required"`
+	// 私有网络的描述信息。您最多可以输入80个字符。
+	Desc string `json:"desc" query:"desc" validate:"required"`
+	// 子网的信息
+	Subnets []CreateSubNet `json:"subnets" query:"subnets" validate:"required"`
+}
+
+type CreateSubNet struct {
+	// 子网的网段。
+	Cidr string `json:"cidr" query:"cidr" validate:"required"`
+	// 子网的名称。命名规则如下：
+	// 允许 5~50 个字符。
+	// 支持汉字、大写字母、小写字母、数字。
+	// 支持特殊字符 ()`~!@#$%^&*-+=_|{}[]:;'<>,.?/。 |
+	// 不能包含双引号（"）、反斜线（ \）和空格，且不能以正斜线（/）开头
+	Name string `json:"name" query:"name" validate:"required"`
+	// 子网的描述
+	Desc string `json:"desc" query:"desc" validate:"required"`
+}
+
+type CreateCustomVPCInstanceResp struct {
+	ResponseMetadata VolcResponseMetadata          `json:"ResponseMetadata"`
+	Result           CreateCustomVPCInstanceResult `json:"Result"`
+}
+
+type CreateCustomVPCInstanceResult struct {
+	VpcInstance VPCInstance `json:"vpc_instance" query:"vpc_instance"` // 私有网络的信息
+}
+
+// 修改私有网络名称 ===========================
+type SetVPCInstanceNameReq struct {
+	// 私有网络的 ID。您可以通过 ListVPCInstances 接口查询私有网络的 ID。
+	VpcIdentity string `json:"vpc_identity" query:"vpc_identity" validate:"required"`
+	// 私有网络的名称。命名规则如下：
+	// 允许 5~50 个字符。
+	// 支持汉字、大写字母、小写字母、数字。
+	// 支持特殊字符  ()`~!@#$%^&*-+=_|{}[]:;'<>,.?/。 |
+	// 不能包含双引号（"）、反斜线（ \）和空格，且不能以正斜线（/）开头
+	VpcName string `json:"vpc_name" query:"vpc_name" validate:"required"`
+}
+type SetVPCInstanceNameResp struct {
+	ResponseMetadata VolcResponseMetadata     `json:"ResponseMetadata"`
+	Result           SetVPCInstanceNameResult `json:"Result"`
+}
+
+type SetVPCInstanceNameResult struct{}
+
+// 修改私有网络描述 ===========================
+type SetVPCInstanceDescReq struct {
+	// 私有网络的 ID。您可以通过 ListVPCInstances 接口查询私有网络的 ID。
+	VpcIdentity string `json:"vpc_identity" query:"vpc_identity" validate:"required"`
+	// 私有网络的描述。您最多可以输入80个字符。
+	// 如果不指定该参数或参数值为空字符串，原来的描述将被清空。
+	Desc string `json:"desc" query:"desc"`
+}
+type SetVPCInstanceDescResp struct {
+	ResponseMetadata VolcResponseMetadata     `json:"ResponseMetadata"`
+	Result           SetVPCInstanceDescResult `json:"Result"`
+}
+
+type SetVPCInstanceDescResult struct{}
+
+// 删除自定义私有网络 ===========================
+type DeleteCustomVPCInstancesReq struct {
+	// 私有网络的列表
+	VpcIdentityList []string `json:"vpc_identity_list" query:"vpc_identity_list" validate:"required"`
+}
+type DeleteCustomVPCInstancesResp struct {
+	ResponseMetadata VolcResponseMetadata           `json:"ResponseMetadata"`
+	Result           DeleteCustomVPCInstancesResult `json:"Result"`
+}
+
+type DeleteCustomVPCInstancesResult struct{}
+
+// 获取子网列表 ===========================
+type ListSubnetInstancesReq struct {
+	// 子网的 ID 的列表。ID 之间用半角逗号（,）分隔。
+	SubnetIdentityList string `json:"subnet_identity_list" query:"subnet_identity_list"`
+	// 子网的状态的列表。子网状态之间用半角逗号（,）分隔。取值范围：
+	// available：可用。
+	// modifying：变更中。
+	// deleting：删除中。
+	// 如果不指定该参数，系统将查询所有状态的子网
+	StatusList string `json:"status_list" query:"status_list"`
+	// 节点名称。节点之间用半角逗号（,）分隔。
+	ClusterNames string `json:"cluster_names" query:"cluster_names"`
+	Pagination
+}
+type ListSubnetInstancesResp struct {
+	ResponseMetadata VolcResponseMetadata      `json:"ResponseMetadata"`
+	Result           ListSubnetInstancesResult `json:"Result"`
+}
+
+type ListSubnetInstancesResult struct {
+	SubnetInstance []*SubnetInstance `json:"subnet_instances"` // 子网的信息列表
+	TotalCount     int64             `json:"count"`            // 子网的信息数量
+}
+
+type SubnetInstance struct {
+	AccountIdentity int     `json:"account_identity"` //
+	UserIdentity    int     `json:"user_identity"`    //
+	SubnetIdentity  string  `json:"subnet_identity"`  // 子网id
+	CidrIP          string  `json:"cidr_ip"`          // ip地址
+	CidrMask        int     `json:"cidr_mask"`        // 前缀长度
+	Name            string  `json:"name"`             // 子网名称
+	Desc            string  `json:"desc"`             // 子网描述
+	Status          string  `json:"status"`           // 子网状态 available：可用。 modifying：变更中。deleting：删除中
+	VpcInfo         VpcInfo `json:"vpc_info"`         // 子网所属的私有网络的信息
+	CreateTime      int     `json:"create_time"`
+	UpdateTime      int     `json:"update_time"`
+}
+type VpcInfo struct {
+	VpcIdentity string  `json:"vpc_identity"` // 私有网络的 ID
+	VpcName     string  `json:"vpc_name"`     // 私有网络的名称
+	Cluster     Cluster `json:"cluster"`      // 私有网络所属的节点的信息
+	IsCustom    bool    `json:"is_custom"`    // 是否是自定义私有网络： true：自定义私有网络。false：非自定义私有网络
+}
+
+// 创建子网===================================
+type CreateSubnetsForCustomVPCReq struct {
+	// 私有网络的名称。命名规则如下：
+	// 允许 5~50 个字符。
+	// 支持汉字、大写字母、小写字母、数字。
+	// 支持特殊字符 ()`~!@#$%^&*-+=_|{}[]:;'<>,.?/。 |
+	// 不能包含双引号（"）、反斜线（\）和空格，且不能以正斜线（/）开头
+	VpcIdentity string `json:"vpc_identity" query:"vpc_identity" validate:"required"`
+	// 子网的列表
+	Subnets []CreateSubNet `json:"subnets" query:"subnets" validate:"required"`
+}
+
+type CreateSubnetsForCustomVPCResp struct {
+	ResponseMetadata VolcResponseMetadata            `json:"ResponseMetadata"`
+	Result           CreateSubnetsForCustomVPCResult `json:"Result"`
+}
+
+type CreateSubnetsForCustomVPCResult struct {
+	SubnetIdList []string `json:"subnet_id_list" query:"subnet_id_list"` // 子网的 ID 的列表
+}
+
+// 修改子网名称和描述 ===========================
+type SetSubnetNameAndDescReq struct {
+	// 子网的 ID
+	SubnetIdentity string `json:"subnet_identity" query:"subnet_identity" validate:"required"`
+	// 子网的的描述。您最多可以输入80个字符。
+	Desc string `json:"desc" query:"desc"`
+	// 子网的名称。命名规则如下：
+	// 允许 5~50 个字符。
+	// 支持汉字、大写字母、小写字母、数字。
+	// 支持特殊字符  ()`~!@#$%^&*-+=_|{}[]:;'<>,.?/。 |
+	// 不能包含双引号（"）、反斜线（ \）和空格，且不能以正斜线（/）开头。
+	Name string `json:"name" query:"name"`
+}
+type SetSubnetNameAndDescResp struct {
+	ResponseMetadata VolcResponseMetadata       `json:"ResponseMetadata"`
+	Result           SetSubnetNameAndDescResult `json:"Result"`
+}
+
+type SetSubnetNameAndDescResult struct{}
+
+// 删除子网 ===========================
+type DeleteSubnetsForCustomVPCReq struct {
+	// 私有网络的 ID
+	VpcIdentity string `json:"vpc_identity" query:"vpc_identity" validate:"required"`
+	// 子网的 ID 的列表
+	SubnetIdentityList []string `json:"subnet_identity_list" query:"subnet_identity_list" validate:"required"`
+}
+type DeleteSubnetsForCustomVPCResp struct {
+	ResponseMetadata VolcResponseMetadata            `json:"ResponseMetadata"`
+	Result           DeleteSubnetsForCustomVPCResult `json:"Result"`
+}
+
+type DeleteSubnetsForCustomVPCResult struct{}

@@ -261,3 +261,15 @@ func (v *Veen) DeleteSubnetsForCustomVPC(req *DeleteSubnetsForCustomVPCReq) (*De
 	}
 	return resp, nil
 }
+
+// 绑定单个弹性公网 IP 到私网 IP 地址
+func (v *Veen) BindEipToInternalIP(req *BindEipToInternalIPReq) (*BindEipToInternalIPResp, error) {
+	resp := &BindEipToInternalIPResp{}
+	if err := v.post("BindEipToInternalIP", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}

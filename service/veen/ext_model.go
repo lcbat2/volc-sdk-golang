@@ -551,3 +551,19 @@ type DeleteSubnetsForCustomVPCResp struct {
 }
 
 type DeleteSubnetsForCustomVPCResult struct{}
+
+// 绑定单个弹性公网 IP 到私网 IP 地址 ===========================
+type BindEipToInternalIPReq struct {
+	// 边缘实例 ID。您可以通过 ListInstances 接口查询边缘实例 ID。
+	InstanceIdentity string `json:"instance_identity" query:"instance_identity" validate:"required"`
+	// 弹性公网 IP 的 ID。
+	EipIdentity []string `json:"eip_identity" query:"eip_identity" validate:"required"`
+	// 私网 IP 地址列表。您可以通过 ListInstanceInternalIps 接口查询边缘实例的私网 IP 地址
+	InternalIP []string `json:"internal_ip" query:"internal_ip" validate:"required"`
+}
+type BindEipToInternalIPResp struct {
+	ResponseMetadata VolcResponseMetadata      `json:"ResponseMetadata"`
+	Result           BindEipToInternalIPResult `json:"Result"`
+}
+
+type BindEipToInternalIPResult struct{}

@@ -379,5 +379,13 @@ var (
 				"Version": []string{ServiceVersion},
 			},
 		},
+		"BindEipToInternalIP": { // 绑定单个弹性公网 IP 到私网 IP 地址
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"BindEipToInternalIP"},
+				"Version": []string{ServiceVersion},
+			},
+		},
 	}
 )

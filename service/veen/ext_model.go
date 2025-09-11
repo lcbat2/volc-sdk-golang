@@ -252,7 +252,7 @@ type ListEIPInstancesResult struct {
 }
 
 type EIPInstance struct {
-	AccountIdentity string         `json:"account_identity"`
+	AccountIdentity int            `json:"account_identity"`
 	UserIdentity    int            `json:"user_identity"`
 	EipIdentity     string         `json:"eip_identity"`
 	EipName         string         `json:"eip_name"`

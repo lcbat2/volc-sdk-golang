@@ -290,10 +290,10 @@ func (v *Veen) SetBoundEipShareBandwidthPeak(req *SetBoundEipShareBandwidthPeakR
 // 获取私网 IP 地址列表
 func (v *Veen) ListInstanceInternalIps(req *ListInstanceInternalIpsReq) (*ListInstanceInternalIpsResp, error) {
 	resp := &ListInstanceInternalIpsResp{}
-	query := url.Values{}
 	if req.InstanceIdentity == "" {
 		return nil, errors.New("instance_identity is required")
 	}
+	query := url.Values{}
 	query.Set("instance_identity", req.InstanceIdentity)
 	if err := v.get("ListInstanceInternalIps", query, resp); err != nil {
 		return nil, err

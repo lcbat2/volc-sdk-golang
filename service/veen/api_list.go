@@ -395,5 +395,21 @@ var (
 				"Version": []string{ServiceVersion},
 			},
 		},
+		"ListInstanceInternalIps": { // 获取私网 IP 地址列表
+			Method: http.MethodGet,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"ListInstanceInternalIps"},
+				"Version": []string{ServiceVersion},
+			},
+		},
+		"BatchUnbindEipFromInternalIP": { // 批量解绑弹性公网 IP
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"BatchUnbindEipFromInternalIP"},
+				"Version": []string{ServiceVersion},
+			},
+		},
 	}
 )

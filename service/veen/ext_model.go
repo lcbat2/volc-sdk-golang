@@ -581,3 +581,49 @@ type SetBoundEipShareBandwidthPeakResp struct {
 }
 
 type SetBoundEipShareBandwidthPeakResult struct{}
+
+// 获取私网 IP 地址列表 ===========================
+type ListInstanceInternalIpsReq struct {
+	// 边缘实例 ID。您可以通过 ListInstances 接口查询边缘实例 ID
+	InstanceIdentity string `json:"instance_identity" query:"instance_identity" validate:"required"`
+}
+type ListInstanceInternalIpsResp struct {
+	ResponseMetadata VolcResponseMetadata          `json:"ResponseMetadata"`
+	Result           ListInstanceInternalIpsResult `json:"Result"`
+}
+
+type ListInstanceInternalIpsResult struct {
+	InternalIps                []InternalIp `json:"internal_ips"`                   // 私网 IP 地址的列表
+	BoundEipShareBandwidthPeak string       `json:"bound_eip_share_bandwidth_peak"` // 弹性公网 IP 的共享带宽峰值。单位：Mbps。
+	BwpStatus                  string       `json:"bwp_status"`                     // 弹性公网 IP 的共享带宽峰值的状态：updating：更新中。ready：已就绪
+	WantedSecondaryIPNum       int          `json:"wanted_secondary_ip_num"`        // 所需辅助私网 IP 地址的数量
+	ActualSecondaryIPNum       int          `json:"actual_secondary_ip_num"`        // 实际分配的辅助 IP 地址数量
+	AllocatingSecondaryIPNum   int          `json:"allocating_secondary_ip_num"`    // 正在分配的辅助 IP 地址数量
+	AllocateFailSecondaryIPNum int          `json:"allocate_fail_secondary_ip_num"` // 分配失败的辅助 IP 地址数量
+	DeletingSecondaryIPNum     int          `json:"deleting_secondary_ip_num"`      // 正在删除的辅助 IP 地址数量
+}
+
+type InternalIp struct {
+	Addr             string `json:"addr"`               // 私网 IP 地址
+	Mask             string `json:"mask"`               // 子网掩码
+	IPVersion        string `json:"ip_version"`         // IP 地址版本：ipv4：IPv4 地址。ipv6：IPv6 地址。
+	Primary          bool   `json:"primary"`            // 是否为主私网 IP 地址：true：主私网 IP 地址。false：非主私网 IP 地址
+	Status           string `json:"status"`             // IP 地址的状态： allocating：分配中。unbound：未绑定。binding：绑定中。bound：已绑定。unbinding：解绑中。deleting：删除中。allocate_fail：分配失败。bind_fail：绑定失败
+	BoundEipIdentity string `json:"bound_eip_identity"` // 绑定的弹性公网 IP 的 ID
+	BoundEipAddr     string `json:"bound_eip_addr"`     // 绑定的弹性公网 IP 的地址
+	BoundEipName     string `json:"bound_eip_name"`     // 绑定的弹性公网 IP 的名称
+}
+
+// 批量解绑弹性公网 IP ===========================
+type BatchUnbindEipFromInternalIPReq struct {
+	// 边缘实例 ID。您可以通过 ListInstances 接口查询边缘实例 ID。
+	InstanceIdentity string `json:"instance_identity" query:"instance_identity" validate:"required"`
+	// 私网 IP 地址列表。您可以通过 ListInstanceInternalIps 接口查询边缘实例的私网 IP 地址
+	InternalIps []string `json:"internal_ips" query:"internal_ips" validate:"required"`
+}
+type BatchUnbindEipFromInternalIPResp struct {
+	ResponseMetadata VolcResponseMetadata               `json:"ResponseMetadata"`
+	Result           BatchUnbindEipFromInternalIPResult `json:"Result"`
+}
+
+type BatchUnbindEipFromInternalIPResult struct{}

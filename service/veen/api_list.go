@@ -387,5 +387,13 @@ var (
 				"Version": []string{ServiceVersion},
 			},
 		},
+		"SetBoundEipShareBandwidthPeak": { // 设置弹性公网 IP 的共享带宽峰值
+			Method: http.MethodPost,
+			Path:   "/",
+			Query: url.Values{
+				"Action":  []string{"SetBoundEipShareBandwidthPeak"},
+				"Version": []string{ServiceVersion},
+			},
+		},
 	}
 )

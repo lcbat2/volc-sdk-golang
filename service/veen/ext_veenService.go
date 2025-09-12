@@ -273,3 +273,15 @@ func (v *Veen) BindEipToInternalIP(req *BindEipToInternalIPReq) (*BindEipToInter
 	}
 	return resp, nil
 }
+
+// 设置弹性公网 IP 的共享带宽峰值
+func (v *Veen) SetBoundEipShareBandwidthPeak(req *SetBoundEipShareBandwidthPeakReq) (*SetBoundEipShareBandwidthPeakResp, error) {
+	resp := &SetBoundEipShareBandwidthPeakResp{}
+	if err := v.post("SetBoundEipShareBandwidthPeak", req, resp); err != nil {
+		return nil, err
+	}
+	if resp.ResponseMetadata.Error != nil {
+		return nil, packErrorInfo(resp.ResponseMetadata)
+	}
+	return resp, nil
+}
